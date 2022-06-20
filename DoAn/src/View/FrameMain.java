@@ -387,7 +387,7 @@ public class FrameMain extends javax.swing.JFrame {
     private void menuKhachHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuKhachHangActionPerformed
 
 		PanelChinh.removeAll();
-		//PanelChinh.add(new PanelKhachHang(), BorderLayout.CENTER);
+		PanelChinh.add(new PanelKhachHang(), BorderLayout.CENTER);
 		PanelChinh.updateUI();
     }//GEN-LAST:event_menuKhachHangActionPerformed
 
@@ -423,7 +423,7 @@ public class FrameMain extends javax.swing.JFrame {
 
     private void menuTKDoanhThuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuTKDoanhThuActionPerformed
 		PanelChinh.removeAll();
-		//PanelChinh.add(new PanelTKDoanhThu(), BorderLayout.CENTER);
+		PanelChinh.add(new PanelTKDoanhThu1(), BorderLayout.CENTER);
 		PanelChinh.updateUI();
     }//GEN-LAST:event_menuTKDoanhThuActionPerformed
 
@@ -501,7 +501,7 @@ public class FrameMain extends javax.swing.JFrame {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				FrameMain main = new FrameMain();
-				main.setSize(1281, 768);
+				main.setSize(1366, 768);
 				main.setLocationRelativeTo(null);
 				main.setResizable(false);
 				main.setVisible(true);

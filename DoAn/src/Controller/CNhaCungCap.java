@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
-import static Main.MainClass.dbURL;
+import static Database.ConnectDB.dbURL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -41,7 +41,7 @@ public class CNhaCungCap {
             conn = DriverManager.getConnection(dbURL);
             sql = "select * From NhaCungCap ";
             if(sMaNCC.equals("")==false)
-                sql = sql + " Where NhaCungCap.MaNCC = N'" + sMaNCC + "'";
+                sql = sql + " Where NhaCungCap.MaNCC'" + sMaNCC + "'";
             sql = sql + " Order by MaNCC ";
             state = conn.createStatement();
             rs = state.executeQuery(sql);
@@ -82,14 +82,13 @@ public class CNhaCungCap {
         
         try {
             conn = DriverManager.getConnection(dbURL);
-            sql = "insert into NhaCungCap (MaNCC, TenNCC, DiaChi, SDT, Email, GhiChu) values (?,?,?,?,?,?)";
+            sql = "insert into NhaCungCap (TenNCC, DiaChi, SDT, Email, GhiChu) values (?,?,?,?,?)";
             pstate = conn.prepareStatement(sql);
-            pstate.setString(1, ncc.getMaNCC());
-            pstate.setString(2, ncc.getTenNCC());
-            pstate.setString(3, ncc.getDiaChi());
-            pstate.setString(4, ncc.getSDT());
-            pstate.setString(5, ncc.getEmail());
-            pstate.setString(6, ncc.getGhiChu());
+            pstate.setString(1, ncc.getTenNCC());
+            pstate.setString(2, ncc.getDiaChi());
+            pstate.setString(3, ncc.getSDT());
+            pstate.setString(4, ncc.getEmail());
+            pstate.setString(5, ncc.getGhiChu());
             pstate.execute();
             pstate.close(); conn.close();
         } catch (SQLException ex) {
@@ -117,15 +116,14 @@ public class CNhaCungCap {
         
         try {
             conn = DriverManager.getConnection(dbURL);
-            sql = "update NhaCungCap set MaNCC =?, TenNCC =?, DiaChi = ?, SDT =?, Emai =?, GhiChu =? where MaNCC=? ";
+            sql = "update NhaCungCap set TenNCC =?, DiaChi = ?, SDT =?, Email =?, GhiChu =? where MaNCC=? ";
             pstate = conn.prepareStatement(sql);
-            pstate.setString(1, ncc.getMaNCC());
-            pstate.setString(2, ncc.getTenNCC());
-            pstate.setString(3, ncc.getDiaChi());
-            pstate.setString(4, ncc.getSDT());
-            pstate.setString(5, ncc.getEmail());
-            pstate.setString(6, ncc.getGhiChu());
-            pstate.setString(7, macu);
+            pstate.setString(1, ncc.getTenNCC());
+            pstate.setString(2, ncc.getDiaChi());
+            pstate.setString(3, ncc.getSDT());
+            pstate.setString(4, ncc.getEmail());
+            pstate.setString(5, ncc.getGhiChu());
+            pstate.setString(6, macu);
             pstate.execute();
             pstate.close(); conn.close();
         } catch (SQLException ex) {

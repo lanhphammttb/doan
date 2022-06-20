@@ -1,166 +1,354 @@
 /*
- * Project 1-T6-14h45-20161
- * Nhom 2-De 14
- * Phan Ngoc Lan
- * Le Thanh Loi
- * Tong Thi Hong
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package Controller;
 
-import java.io.IOException;
-import java.util.Vector;
-//import Model.ChiTietDatPhong;
-//import Model.ChiTietDichVu;
-//import Model.DatPhong;
-//import Model.DichVu;
+import static Controller.CChiTietHoaDon.conn;
+import static Controller.CChiTietHoaDon.rs;
+import static Controller.CChiTietHoaDon.sql;
+import static Controller.CChiTietHoaDon.state;
+import static Database.ConnectDB.dbURL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import Model.HoaDon;
-import Model.KhachHang;
-import Model.SanPham;
-import Database.*;
+import Model.ChiTietHoaDon;
 
-/**
- *
- * @author WILL
- */
 public class CHoaDon {
-	private Vector<HoaDon> DS;
-	private ConnectDB conn;
-	
-	public CHoaDon(String user, String pass){
-		DS = new Vector<HoaDon>(100);
-		conn = new ConnectDB();
-		conn.connect("khachsan", UserInfo.username, UserInfo.password);
-		
-		String[] key = null;
+    public static String sql;
+    public static Connection conn;
+    public static Statement state;
+    public static ResultSet rs;
+    public static PreparedStatement pstate;
+    //1. lay nguon
+    public static List<HoaDon> LayNguonHD(String sMaHoaDon){
+        List<HoaDon> arr = new ArrayList<>();
+         conn = null;
+         state = null;
+        
+        try {
+            conn = DriverManager.getConnection(dbURL);
+            sql = "select * From HoaDon ";
+            if(sMaHoaDon.equals("")==false)
+                sql = sql + " Where HoaDon.MaHoaDon = " + sMaHoaDon;
+            //sql = sql + " Order by MaHoaDon ";
+            state =conn.createStatement();
+             rs = state.executeQuery(sql);
+            while(rs.next()){
+                HoaDon temp = new HoaDon();
+                temp.setMaHoaDon(rs.getString("MaHoaDon")); 
+                temp.setMaKhachHang(rs.getString("MaKhachHang"));               
+                temp.setMaNhanVien(rs.getString("MaNhanVien"));
+                temp.setNgayLapHoaDon(rs.getString("NgayLapHoaDon"));
+                temp.setKhuyenMai(rs.getString("KhuyenMai"));
+                temp.setTongTien(rs.getString("TongTien"));
+                temp.setGhiChu(rs.getString("GhiChu"));
+                arr.add(temp);
+            }
+            state.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            if(state!=null){
+                try {
+                    state.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(conn!=null){
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return arr;
+    }
+//    public static List<HoaDon> LayDuLieuHoaDon(){
+//        List<HoaDon> arr = new ArrayList<>();
+//         conn = null;
+//         state = null;
+//        
+//        try {
+//            conn = DriverManager.getConnection(dbURL);
+//            sql = "select MaHoaDon,KhachHang.TenKhachHang as TenKhachHang,NhanVien.TenNhanVien,TongTien,NgayLapHoaDon,HoaDon.GhiChu from HoaDon,KhachHang,NhanVien where HoaDon.MaKhachHang =KhachHang.MaKhachHang and HoaDon.MaNhanVien=NhanVien.MaNhanVien ";
+//            state =conn.createStatement();
+//             rs = state.executeQuery(sql);
+//            while(rs.next()){
+//                HoaDon temp = new HoaDon();
+//                temp.setMaHoaDon(rs.getString("MaHoaDon")); 
+//                temp.setMaKhachHang(rs.getString("MaKhachHang"));               
+//                temp.setMaNhanVien(rs.getString("MaNhanVien"));
+//                temp.setNgayLapHoaDon(rs.getString("NgayLapHoaDon"));
+//                temp.setTongTien(rs.getString("TongTien"));
+//                temp.setGhiChu(rs.getString("GhiChu"));
+//                arr.add(temp);
+//            }
+//            state.close();
+//            conn.close();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(CHoaDon.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        finally{
+//            if(state!=null){
+//                try {
+//                    state.close();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(CHoaDon.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            if(conn!=null){
+//                try {
+//                    conn.close();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(CHoaDon.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }
+//        return arr;
+//    }
+           //2.them tai khoan
+    public static void ThemMoi(HoaDon hd){
+        conn = null;
+        pstate = null;
+        
+        try {
+            conn = DriverManager.getConnection(dbURL);
+            sql = "Insert into HoaDon(MaKhachHang,MaNhanVien,NgayLapHoaDon,KhuyenMai, TongTien, GhiChu) values(?,?,?,?,?,?)";
+            pstate = conn.prepareStatement(sql);
+            pstate.setString(1, hd.getMaKhachHang());
+            pstate.setString(2, hd.getMaNhanVien());
+            pstate.setString(3, hd.getNgayLapHoaDon());
+            pstate.setString(4, hd.getKhuyenMai());
+            pstate.setString(5, hd.getTongTien());
+            pstate.setString(6, hd.getGhiChu());
+            pstate.execute();
+            pstate.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            if(pstate!=null){
+                try {
+                    pstate.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(conn!=null){
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+    //3.cap nhat tai khoan
+    public static void CapNhat(HoaDon hd, String macu){
+        conn = null;
+        pstate = null;
+        
+        try {
+            conn = DriverManager.getConnection(dbURL);
+            sql = "Update HoaDon Set MaKhachHang =?, MaNhanVien =?, NgayLapHoaDon =?,KhuyenMai =?, TongTien =?, GhiChu =? Where MaHoaDon =?";
+            pstate = conn.prepareStatement(sql);
+            pstate = conn.prepareStatement(sql);
+            pstate.setString(1, hd.getMaKhachHang());
+            pstate.setString(2, hd.getMaNhanVien());
+            pstate.setString(3, hd.getNgayLapHoaDon());
+            pstate.setString(4, hd.getKhuyenMai());
+            pstate.setString(5, hd.getTongTien());
+            pstate.setString(6, hd.getGhiChu());
+            pstate.setString(7, macu);
+            pstate.execute();
+            pstate.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CHoaDon.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            if(pstate!=null){
+                try {
+                    pstate.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CHoaDon.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(conn!=null){
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } 
+    }
+    //4.xoa tai khoan
+    public static void XoaBo(String macu){
+        conn = null;
+        pstate = null;
+        
+        try {
+            conn = DriverManager.getConnection(dbURL);
+            sql = "Delete From HoaDon Where MaHoaDon =?";
+            pstate= conn.prepareStatement(sql);
+            pstate.setString(1, macu);
+            pstate.execute();
+            pstate.close();
+            conn.close();   
+        } catch (SQLException ex) {
+            Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            if(pstate!=null){
+                try {
+                    pstate.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if(conn!=null){
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }   
+    } 
+    public static List<HoaDon> findByDate(String ngay){
+        List<HoaDon> arr = new ArrayList<>();
+        conn = null;
+        pstate=null;
+       
+        try {
+            conn = DriverManager.getConnection(dbURL);
+            sql="Select * From HoaDon where NgayLapHoaDon like ?";
+            pstate = conn.prepareStatement(sql);
+            pstate.setString(1, "%" + ngay + "%");
+            rs = pstate.executeQuery();
+            while (rs.next())
+            {
+                HoaDon hd = new HoaDon();
+                hd.setMaHoaDon(rs.getString("MaHoaDon")); 
+                hd.setMaKhachHang(rs.getString("MaKhachHang"));               
+                hd.setMaNhanVien(rs.getString("MaNhanVien"));
+                hd.setNgayLapHoaDon(rs.getString("NgayLapHoaDon"));
+                hd.setKhuyenMai(rs.getString("KhuyenMai"));
+                hd.setTongTien(rs.getString("TongTien"));
+                hd.setGhiChu(rs.getString("GhiChu"));
+                arr.add(hd);   
+            }
+            pstate.close(); conn.close();           
+        } catch (SQLException ex) {
+            Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return arr;
+    }
 
-		Vector<String> vec = conn.select("hoadon", key);
-		for(String s : vec){
-			DS.add(new HoaDon(s));
-		}
-	}
-	
-	public int searchIndex(String maHD) {
-		int i = 0;
-		for (HoaDon hd : DS) {
-			if (hd.getMaHD().equals(maHD)) {
-				return i;
-			}
-			i++;
-		}
-		return -1;
-	}
-	
-	public boolean add(String record){
-		HoaDon hd = new HoaDon(record);
-		String [] values = hd.getValues();
-		
-		if(!conn.insert("hoadon", values))
-			return false;
-		
-		DS.add(hd);
-		return true;
-	}
-	
-	public boolean delete(String key){
-		if(!conn.delete("hoadon", "MaHD", key))
-			return false;
-		
-		int pos = searchIndex(key);
-		DS.remove(pos);
-		return true;
-	}
-	
-	public boolean edit(String record, String key){
-		HoaDon hd = new HoaDon(record);
-		String [] values = hd.getValues();
-		
-		values[0] = "MaHD=" + "'" + values[0] + "'";
-		values[1] = "MaDatPhong=" + "'" + values[1] + "'";
-		values[2] = "TGThanhToan=" +"STR_TO_DATE(" + "'"+ values[2]+"',"+"'%d-%m-%Y')";
-		values[3] = "TienPhong=" + values[3];
-		values[4] = "TienDichVu=" + values[4];
-		
-		String pkey = "MaHD=" + "'" + key + "'";
-		if (!conn.update("hoadon", values, pkey)) {
-			return false;
-		}
+    
+    public static List<HoaDon> ThongKeTheoNam(String Stim){
+        List<HoaDon> arr = new ArrayList<>();
+         conn = null;
+         pstate = null;
+        
+        try {
+            conn = DriverManager.getConnection(dbURL);
+            sql = "select * from HoaDon Where NgayLapHoaDon like ?";
+            pstate = conn.prepareStatement(sql);
+            pstate.setString(1, "%" + Stim);
+            rs = pstate.executeQuery();
+            while (rs.next())
+            {
+                HoaDon hd = new HoaDon();
+                hd.setMaHoaDon(rs.getString("MaHoaDon")); 
+                hd.setMaKhachHang(rs.getString("MaKhachHang"));               
+                hd.setMaNhanVien(rs.getString("MaNhanVien"));
+                hd.setNgayLapHoaDon(rs.getString("NgayLapHoaDon"));
+                hd.setKhuyenMai(rs.getString("KhuyenMai"));
+                hd.setTongTien(rs.getString("TongTien"));
+                hd.setGhiChu(rs.getString("GhiChu"));
+                arr.add(hd);   
+            }
+            pstate.close(); conn.close();           
+        } catch (SQLException ex) {
+            Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return arr;
+    }
+    
+    
+        public static List<HoaDon> ThongKeTheoThang(String Sthang){
+        List<HoaDon> arr = new ArrayList<>();
+         conn = null;
+         pstate = null;
+        
+        try {
+            conn = DriverManager.getConnection(dbURL);
+            sql = "select * from HoaDon Where NgayLapHoaDon like ?";
+            pstate = conn.prepareStatement(sql);
+            pstate.setString(1, "%" + Sthang+ "%");
+            rs = pstate.executeQuery();
+            while (rs.next())
+            {
+                HoaDon hd = new HoaDon();
+                hd.setMaHoaDon(rs.getString("MaHoaDon")); 
+                hd.setMaKhachHang(rs.getString("MaKhachHang"));               
+                hd.setMaNhanVien(rs.getString("MaNhanVien"));
+                hd.setNgayLapHoaDon(rs.getString("NgayLapHoaDon"));
+                hd.setKhuyenMai(rs.getString("KhuyenMai"));
+                hd.setTongTien(rs.getString("TongTien"));
+                hd.setGhiChu(rs.getString("GhiChu"));
+                arr.add(hd);   
+            }
+            pstate.close(); conn.close();           
+        } catch (SQLException ex) {
+            Logger.getLogger(CHoaDon1.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return arr;
+    }
 
-		int pos = searchIndex(key);
-		DS.remove(pos);
-		DS.insertElementAt(hd, pos);
-		return true;
-	}
-	
-	public Vector<String> addFile(String fileName){
-		Vector<String> vec = WriteRead.read(fileName);
-		Vector<String> vec2 = new Vector<String>(10);
-		
-		for (String s : vec){
-			HoaDon hd = new HoaDon(s);
-			String [] values = hd.getValues();
-			if (!conn.insert("hoadon", values)) {
-				continue;
-			}
-			vec2.add(s);
-			DS.add(hd);
-		}
-		
-		return vec2;
-	}
-	
-	public Vector<HoaDon> getDS(){
-		return DS;
-	}
-	
-	public Object [][] getTableData(){
-		if (DS == null) {
-			return new Object[0][6];
-		}
-		Object[][] data = new Object[DS.size()][6];
-		
-		int i = 0;
-		for(HoaDon hd : DS){
-			data[i] = hd.getValues();
-			i++;
-		}
-		
-		return data;
-	}
-
-	public void printReceipt(String filePath, int index, String method, double discount, double tax){
-//		HoaDon hd = DS.get(index);
-//		
-//		CDatPhong cdp = new CDatPhong("","");
-//		DatPhong dp = cdp.getDS().get(cdp.searchIndex(hd.getMaDatHang()));
-//		
-//		CKhachHang ckh = new CKhachHang("","");
-//		KhachHang kh = ckh.getDS().get(ckh.searchIndex(dp.getMaKH()));
-//		
-//		Vector<Phong> rooms = new Vector<Phong>(10);
-//		CPhong cp = new CPhong("","");
-//		CChiTietDatPhong cctdp = new CChiTietDatPhong("","");
-//		for(ChiTietDatPhong ctdp : cctdp.getDS()){
-//			if(ctdp.getMaDatPhong().equals(dp.getMaDatPhong())){
-//				rooms.add(cp.getDS().get(cp.searchIndex(ctdp.getMaPhong())));
-//			}
-//		}
-//		
-//		CDichVu cdv = new CDichVu("","");
-//		CChiTietDichVu cctdv = new CChiTietDichVu("","");
-//		Vector<String[]> service = new Vector<String[]>(5);
-//		for(Phong p : rooms){
-//			for(ChiTietDichVu ctdv : cctdv.getDS()){
-//				if(ctdv.getMaPhong().equals(p.getMaP())){
-//					DichVu dv = cdv.getDS().get(cdv.searchIndex(ctdv.getMaDV()));
-//					service.add(new String[]{dv.getMaDV(),dv.getTenDV(),Integer.toString(ctdv.getSoLuong()),Double.toString(dv.getDonGia()),Double.toString(ctdv.getThanhTien())});
-//				}
-//			}
-//		}
-//		
-//		try{
-//			PrintPDF.printReceipt(filePath, hd, kh, rooms, service, method, discount, tax);
-//		}catch(IOException e){
-//			e.printStackTrace();
-//		}
-	}
 }
+//        
+////    public static List<HoaDon> CapnhatThanhTien(String sthanhtien,String sSua){
+////        List<HoaDon> arr = new ArrayList<>();
+////         conn = null;
+////         pstate = null;
+////        
+////        try {
+////            conn = DriverManager.getConnection(dbURL);
+////            sql = "update HoaDon set DaThanhToan ='" + sthanhtien + "' where id='"+ sSua +"'";
+////            pstate = conn.prepareStatement(sql);
+////            rs = pstate.executeQuery();
+////            while (rs.next())
+////            {
+////                HoaDon hd = new HoaDon();
+//                hd.setIdPX(rs.getInt("idPX")); 
+//                hd.setMaKH(rs.getString("MaKH"));               
+//                hd.setMaNV(rs.getString("MaNV"));
+//                hd.setNgayBan(rs.getString("NgayBan"));
+//                hd.setTongtien(rs.getInt("TongTien"));
+////                arr.add(hd);   
+////            }
+////            pstate.close(); conn.close();           
+////        } catch (SQLException ex) {
+////            Logger.getLogger(CHoaDon.class.getName()).log(Level.SEVERE, null, ex);
+////        }
+////        return arr;
+////    }
+

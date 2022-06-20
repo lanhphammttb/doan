@@ -4,77 +4,74 @@ import java.util.GregorianCalendar;
 import Database.CalendarAdapter;
 
 public class HoaDon {
+    String MaHoaDon, MaKhachHang, MaNhanVien, NgayLapHoaDon, KhuyenMai, TongTien, GhiChu;
 
-	private String maHD;
-	private String maDatPhong;
-	private GregorianCalendar thoiGianThanhToan;
-	private double tienPhong;
-	private double tienDichvu;
+    public HoaDon() {
+    }
+
+    public HoaDon(String MaHoaDon, String MaKhachHang, String MaNhanVien, String NgayLapHoaDon, String KhuyenMai, String TongTien, String GhiChu) {
+        this.MaHoaDon = MaHoaDon;
+        this.MaKhachHang = MaKhachHang;
+        this.MaNhanVien = MaNhanVien;
+        this.NgayLapHoaDon = NgayLapHoaDon;
+        this.KhuyenMai = KhuyenMai;
+        this.TongTien = TongTien;
+        this.GhiChu = GhiChu;
+    }
+
+    public String getMaHoaDon() {
+        return MaHoaDon;
+    }
+
+    public void setMaHoaDon(String MaHoaDon) {
+        this.MaHoaDon = MaHoaDon;
+    }
+
+    public String getMaKhachHang() {
+        return MaKhachHang;
+    }
+
+    public void setMaKhachHang(String MaKhachHang) {
+        this.MaKhachHang = MaKhachHang;
+    }
+
+    public String getMaNhanVien() {
+        return MaNhanVien;
+    }
+
+    public void setMaNhanVien(String MaNhanVien) {
+        this.MaNhanVien = MaNhanVien;
+    }
+
+    public String getNgayLapHoaDon() {
+        return NgayLapHoaDon;
+    }
+
+    public void setNgayLapHoaDon(String NgayLapHoaDon) {
+        this.NgayLapHoaDon = NgayLapHoaDon;
+    }
+
+    public String getKhuyenMai() {
+        return NgayLapHoaDon;
+    }
+
+    public void setKhuyenMai(String KhuyenMai) {
+        this.KhuyenMai = KhuyenMai;
+    }
+    public String getTongTien() {
+        return TongTien;
+    }
+
+    public void setTongTien(String TongTien) {
+        this.TongTien = TongTien;
+    }
+
+    public String getGhiChu() {
+        return GhiChu;
+    }
+
+    public void setGhiChu(String GhiChu) {
+        this.GhiChu = GhiChu;
+    }
 	
-	public HoaDon(String record){
-		String[] s = new String[5];
-		s = record.split("\t",5);
-		
-		maHD = s[0];
-		maDatPhong = s[1];
-		thoiGianThanhToan = new GregorianCalendar();
-		thoiGianThanhToan.setTime(CalendarAdapter.StringToDate(s[2]));
-		tienPhong = Double.parseDouble(s[3]);
-		tienDichvu = Double.parseDouble(s[4]);
-	}
-
-	public String getMaHD() {
-		return maHD;
-	}
-
-	public void setMaHD(String maHD) {
-		this.maHD = maHD;
-	}
-
-	public String getMaDatHang() {
-		return maDatPhong;
-	}
-
-	public void setMaDatHang(String maDatPhong) {
-		this.maDatPhong = maDatPhong;
-	}
-
-	public GregorianCalendar getThoiGianThanhToan() {
-		return thoiGianThanhToan;
-	}
-	public String getThoiGianThanhToanString(){
-		return CalendarAdapter.formatCalendar(thoiGianThanhToan);
-	}
-	
-	public void setThoiGianThanhToan(GregorianCalendar thoiGianThanhToan) {
-		this.thoiGianThanhToan = thoiGianThanhToan;
-	}
-
-	public double getTienPhong() {
-		return tienPhong;
-	}
-
-	public void setTienPhong(double tienPhong) {
-		this.tienPhong = tienPhong;
-	}
-
-	public double getTienDichvu() {
-		return tienDichvu;
-	}
-
-	public void setTienDichvu(double tienDichvu) {
-		this.tienDichvu = tienDichvu;
-	}
-
-	public String[] getValues(){
-		String [] values = new String[5];
-		
-		values[0] = maHD;
-		values[1] = maDatPhong;
-		values[2] = getThoiGianThanhToanString();
-		values[3] = Double.toString(tienPhong);
-		values[4] = Double.toString(tienDichvu);
-		
-		return values;
-	}
 }

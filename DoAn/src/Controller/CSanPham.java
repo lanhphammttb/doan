@@ -1,5 +1,9 @@
 package Controller;
 
+import static Controller.CKhachHang.conn;
+import static Controller.CKhachHang.pstate;
+import static Controller.CKhachHang.sql;
+import static Database.ConnectDB.dbURL;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Connection;
@@ -12,7 +16,6 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
-import static Main.MainClass.dbURL;
 import Model.SanPham;
 
 public class CSanPham{
@@ -24,7 +27,7 @@ public class CSanPham{
     public static PreparedStatement pstate;
 
     //1. lay nguon
-    public static List<SanPham> LayNguonNV(String sMaSanPham) {
+    public static List<SanPham> LayNguonSP(String sMaSanPham) {
         List<SanPham> arr = new ArrayList<>();
         conn = null;
         state = null;
@@ -33,7 +36,7 @@ public class CSanPham{
             conn = DriverManager.getConnection(dbURL);
             sql = " select * From SanPham ";
             if (sMaSanPham.equals("") == false) {
-                sql = sql + " Where SanPham.MaSanPham = N'" + sMaSanPham + "'";    //phải có N k lỗi
+                sql = sql + " Where SanPham.MaSanPham = " + sMaSanPham;    //phải có N k lỗi
             }
             sql = sql + " Order by MaSanPham ";
             state = conn.createStatement();
@@ -110,7 +113,45 @@ public class CSanPham{
             }
         }
     }
-
+//    public static int GetGiaSanPham(String sMaSanPham) {
+//        int Gia = 0;
+//        conn = null;
+//        state = null;
+//
+//        try {
+//            conn = DriverManager.getConnection(dbURL);
+//            sql = "select * from SanPham where MaSanPham=";
+//            if (sMaSanPham.equals("") == false) {
+//                sql = sql + "N'" + sMaSanPham + "'";    //phải có N k lỗi
+//            }
+//            sql = sql + " Order by MaSanPham ";
+//            state = conn.createStatement();
+//            rs = state.executeQuery(sql);
+//            while (rs.next()) {
+//                Gia = rs.getInt("GiaBan");
+//            }
+//            state.close();
+//            conn.close();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            if (state != null) {
+//                try {
+//                    state.close();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            if (conn != null) {
+//                try {
+//                    conn.close();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }
+//        return Gia;
+//    }
     //3.cap nhat tai khoan
     public static void CapNhat(SanPham tk, String macu) {
         conn = null;
@@ -155,71 +196,70 @@ public class CSanPham{
     public static void XoaBo(String macu) {
         conn = null;
         pstate = null;
-
+        
         try {
             conn = DriverManager.getConnection(dbURL);
-            sql = "Delete From SanPham Where MaSanPham =?";
+            sql = "delete from SanPham where MaSanPham=?";
             pstate = conn.prepareStatement(sql);
             pstate.setString(1, macu);
             pstate.execute();
-            pstate.close();
-            conn.close();
+            pstate.close(); conn.close();
         } catch (SQLException ex) {
-            Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (pstate != null) {
+            Logger.getLogger(CKhachHang.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            if(pstate!=null)
                 try {
                     pstate.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            } catch (SQLException ex) {
+                Logger.getLogger(CKhachHang.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if (conn != null) {
+            if(conn!=null)
                 try {
                     conn.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-    }
-
-    public static void DoiMatKhau(SanPham tk, String macu) {
-        conn = null;
-        pstate = null;
-
-        try {
-            conn = DriverManager.getConnection(dbURL);
-            sql = "Update SanPham Set MaSanPham =?, TenSanPham =?, LoaiSanPham =?, HangSanXuat =?, GiaNhap =?, GiaBan =?, DonViTinh =? Where MaSanPham=?";
-            pstate = conn.prepareStatement(sql);
-            pstate.setString(1, tk.getMaSanPham());
-            pstate.setString(2, tk.getTenSanPham());
-            pstate.setString(3, tk.getLoaiSanPham());
-            pstate.setString(4, tk.getHangSanXuat());
-            pstate.setString(5, tk.getGiaNhap());
-            pstate.setString(6, tk.getGiaBan());
-            pstate.setString(7, tk.getDonViTinh());
-            pstate.setString(8, macu);
-            pstate.execute();
-            pstate.close();
-            conn.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (pstate != null) {
-                try {
-                    pstate.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
+            } catch (SQLException ex) {
+                Logger.getLogger(CKhachHang.class.getName()).log(Level.SEVERE, null, ex);
+            }   
+        }   
     }
 }
+
+//    public static void DoiMatKhau(SanPham tk, String macu) {
+//        conn = null;
+//        pstate = null;
+//
+//        try {
+//            conn = DriverManager.getConnection(dbURL);
+//            sql = "Update SanPham Set MaSanPham =?, TenSanPham =?, LoaiSanPham =?, HangSanXuat =?, GiaNhap =?, GiaBan =?, DonViTinh =? Where MaSanPham=?";
+//            pstate = conn.prepareStatement(sql);
+//            pstate.setString(1, tk.getMaSanPham());
+//            pstate.setString(2, tk.getTenSanPham());
+//            pstate.setString(3, tk.getLoaiSanPham());
+//            pstate.setString(4, tk.getHangSanXuat());
+//            pstate.setString(5, tk.getGiaNhap());
+//            pstate.setString(6, tk.getGiaBan());
+//            pstate.setString(7, tk.getDonViTinh());
+//            pstate.setString(8, macu);
+//            pstate.execute();
+//            pstate.close();
+//            conn.close();
+//        } catch (SQLException ex) {
+//            Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            if (pstate != null) {
+//                try {
+//                    pstate.close();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            if (conn != null) {
+//                try {
+//                    conn.close();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(CSanPham.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }
+//    }
+//}

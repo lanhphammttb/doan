@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
-import static Main.MainClass.dbURL;
+import static Database.ConnectDB.dbURL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -84,16 +84,15 @@ public class CKhachHang {
         
         try {
             conn = DriverManager.getConnection(dbURL);
-            sql = "insert into KhachHang (MaKhachHang, TenKhachHang, NgaySinh, GioiTinh, DiaChi, SDT, LoaiKhachHang, GhiChu) values (?,?,?,?,?,?,?,?)";
+            sql = "insert into KhachHang (TenKhachHang, NgaySinh, GioiTinh, DiaChi, SDT, LoaiKhachHang, GhiChu) values (?,?,?,?,?,?,?)";
             pstate = conn.prepareStatement(sql);
-            pstate.setString(1, kh.getMaKhachHang());
-            pstate.setString(2, kh.getTenKhachHang());
-            pstate.setString(3, kh.getNgaySinh());
-            pstate.setString(4, kh.getGioiTinh());
-            pstate.setString(5, kh.getDiaChi());
-            pstate.setString(6, kh.getSDT());
-            pstate.setString(7, kh.getLoaiKhachHang());
-            pstate.setString(8, kh.getGhiChu());
+            pstate.setString(1, kh.getTenKhachHang());
+            pstate.setString(2, kh.getNgaySinh());
+            pstate.setString(3, kh.getGioiTinh());
+            pstate.setString(4, kh.getDiaChi());
+            pstate.setString(5, kh.getSDT());
+            pstate.setString(6, kh.getLoaiKhachHang());
+            pstate.setString(7, kh.getGhiChu());
             pstate.execute();
             pstate.close(); conn.close();
         } catch (SQLException ex) {
@@ -121,17 +120,16 @@ public class CKhachHang {
         
         try {
             conn = DriverManager.getConnection(dbURL);
-            sql = "update KhachHang set MaKhachHang =?, TenKhachHang =?, NgaySinh =?, GioiTinh =?, DiaChi = ?, SDT =?, LoaiKhachHang =?, GhiChu =? where MaKhachHang=? ";
+            sql = "update KhachHang set  TenKhachHang =?, NgaySinh =?, GioiTinh =?, DiaChi = ?, SDT =?, LoaiKhachHang =?, GhiChu =? where MaKhachHang=? ";
             pstate = conn.prepareStatement(sql);
-            pstate.setString(1, kh.getMaKhachHang());
-            pstate.setString(2, kh.getTenKhachHang());
-            pstate.setString(3, kh.getNgaySinh());
-            pstate.setString(4, kh.getGioiTinh());
-            pstate.setString(5, kh.getDiaChi());
-            pstate.setString(6, kh.getSDT());
-            pstate.setString(7, kh.getLoaiKhachHang());
-            pstate.setString(8, kh.getGhiChu());
-            pstate.setString(9, macu);
+            pstate.setString(1, kh.getTenKhachHang());
+            pstate.setString(2, kh.getNgaySinh());
+            pstate.setString(3, kh.getGioiTinh());
+            pstate.setString(4, kh.getDiaChi());
+            pstate.setString(5, kh.getSDT());
+            pstate.setString(6, kh.getLoaiKhachHang());
+            pstate.setString(7, kh.getGhiChu());
+            pstate.setString(8, macu);
             pstate.execute();
             pstate.close(); conn.close();
         } catch (SQLException ex) {

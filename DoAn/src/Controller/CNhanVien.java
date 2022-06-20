@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.sql.PreparedStatement;
-import static Main.MainClass.dbURL;
+import static Database.ConnectDB.dbURL;
 
 public class CNhanVien{
 
@@ -81,20 +81,18 @@ public class CNhanVien{
 
         try {
             conn = DriverManager.getConnection(dbURL);
-            sql = "Insert into NhanVien(MaNhanVien, TenNhanVien, NgaySinh, GioiTinh, NgayVaoLam, ChucVu, DiaChi, SoDT, GhiChu) values(?,?,?,?,?,?,?,?,?)";
+            sql = "Insert into NhanVien(TenNhanVien, NgaySinh, GioiTinh, NgayVaoLam, ChucVu, DiaChi, SoDT, GhiChu) values(?,?,?,?,?,?,?,?)";
             pstate = conn.prepareStatement(sql);
-            pstate.setString(1, tk.getMaNhanVien());
-            pstate.setString(2, tk.getTenNhanVien());
-            pstate.setString(3, tk.getNgaySinh());
-            pstate.setString(4, tk.getGioiTinh());
-            pstate.setString(5, tk.getNgayVaoLam());
-            pstate.setString(6, tk.getChucVu());
-            pstate.setString(7, tk.getDiaChi());
-            pstate.setString(8, tk.getSoDT());
-            pstate.setString(9, tk.getGhiChu());
+            pstate.setString(1, tk.getTenNhanVien());
+            pstate.setString(2, tk.getNgaySinh());
+            pstate.setString(3, tk.getGioiTinh());
+            pstate.setString(4, tk.getNgayVaoLam());
+            pstate.setString(5, tk.getChucVu());
+            pstate.setString(6, tk.getDiaChi());
+            pstate.setString(7, tk.getSoDT());
+            pstate.setString(8, tk.getGhiChu());
             pstate.execute();
-            pstate.close();
-            conn.close();
+            pstate.close();conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(CNhanVien.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -122,18 +120,17 @@ public class CNhanVien{
 
         try {
             conn = DriverManager.getConnection(dbURL);
-            sql = "Update NhanVien Set MaNhanVien =?, TenNhanVien =?, NgaySinh =?, GioiTinh =?, NgayVaoLam =?, ChucVu =?, DiaChi =?, SoDT =?, GhiChu =? Where MaNhanVien=?";
+            sql = "Update NhanVien Set TenNhanVien =?, NgaySinh =?, GioiTinh =?, NgayVaoLam =?, ChucVu =?, DiaChi =?, SoDT =?, GhiChu =? Where MaNhanVien=?";
             pstate = conn.prepareStatement(sql);
-            pstate.setString(1, tk.getMaNhanVien());
-            pstate.setString(2, tk.getTenNhanVien());
-            pstate.setString(3, tk.getNgaySinh());
-            pstate.setString(4, tk.getGioiTinh());
-            pstate.setString(5, tk.getNgayVaoLam());
-            pstate.setString(6, tk.getChucVu());
-            pstate.setString(7, tk.getDiaChi());
-            pstate.setString(8, tk.getSoDT());
-            pstate.setString(9, tk.getGhiChu());
-            pstate.setString(10, macu);
+            pstate.setString(1, tk.getTenNhanVien());
+            pstate.setString(2, tk.getNgaySinh());
+            pstate.setString(3, tk.getGioiTinh());
+            pstate.setString(4, tk.getNgayVaoLam());
+            pstate.setString(5, tk.getChucVu());
+            pstate.setString(6, tk.getDiaChi());
+            pstate.setString(7, tk.getSoDT());
+            pstate.setString(8, tk.getGhiChu());
+            pstate.setString(9, macu);
             pstate.execute();
             pstate.close();
             conn.close();
